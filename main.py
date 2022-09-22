@@ -5,35 +5,39 @@ import time
 
 time.sleep(2)
 
-def drawBox(img,bbox): 
-    x,y,w,h = (bbox[0]),(bbox[1]),(bbox[2]),(bbox[3]) # convert bbox 
-    cv.rectangle(img,(x,y),((x+w),(y+h)),(255,30,150),2) # draw a rectangle on the object
-    
-img = ImageGrab.grab(bbox=(0,0,1920,1080)) # print function
-img = cv.cvtColor(np.array(img), cv.COLOR_BGR2RGB) # convert color to rgb
+def drawBox(img, bbox):
+    x, y, w, h = (bbox[0]), (bbox[1]), (bbox[2]), (bbox[3]) 
+    cv.rectangle(img, (x, y), ((x + w), (y + h)), (255, 30, 150), 2)
 
-roi = cv.selectROI("opencv", img, False) # init the selector
-tracker = cv.TrackerKCF_create() # create the tracker model
-tracker.init(img, roi) # init the tracker
 
-cv.namedWindow("opencv", cv.WINDOW_NORMAL) # resizable windows
+img = ImageGrab.grab(bbox=(0, 0, 1920, 1080))
+img = cv.cvtColor(np.array(img), cv.COLOR_BGR2RGB)
+
+roi = cv.selectROI("opencv", img, False) ## select image to track
+tracker = cv.TrackerCSRT_create() ## define the tracking algorithm
+tracker.init(img, roi) 
+
+cv.namedWindow("opencv", cv.WINDOW_NORMAL) ## make the window resisable
+
+
 def main():
-    img = ImageGrab.grab(bbox=(0,0,1920,1080)) #  
-    frame = np.array(img)
-    frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-    
+    frame = ImageGrab.grab(bbox=(0, 0, 1920, 1080))
+    frame = cv.cvtColor(np.array(frame), cv.COLOR_BGR2RGB)
     sucess, bbox = tracker.update(frame)
-    print("isOnScreen: {}".format(sucess),"|" "coordinate: {}".format(bbox))
-    
+    ## remove the coment to see debug
+    #print("isOnScreen: {}".format(sucess),"|" "coordinate: {}".format(bbox))
+
     if sucess:
-        drawBox(frame,bbox)
+        drawBox(frame, bbox)
     else:
-        cv.putText(frame,"lost track",(500,500),cv.FONT_HERSHEY_COMPLEX,2,(0,0,255),1,1)
-    
-    cv.imshow("opencv", frame)    
-    
+        cv.putText(frame, "lost track", (500, 500),
+                   cv.FONT_HERSHEY_COMPLEX, 2, (0, 0, 255), 1, 1)
+
+    cv.imshow("opencv", frame)
+
+
 if __name__ == '__main__':
-    while 1:
+    while True:
         main()
-        if cv.waitKey(1) == 27:
-            break 
+        if cv.waitKey(1) == 27: ## opencv required
+            break
