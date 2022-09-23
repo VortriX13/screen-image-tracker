@@ -3,7 +3,8 @@ import numpy as np
 from PIL import ImageGrab
 import time
 
-time.sleep(2)
+input("press enter to start!")
+time.sleep(1)
 
 def drawBox(img, bbox):
     x, y, w, h = (bbox[0]), (bbox[1]), (bbox[2]), (bbox[3]) 
